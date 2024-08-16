@@ -1,0 +1,27 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: cloud-gateway #以微服务注册进consul或nacos服务列表内
+  cloud:
+    gateway:
+      routes:
+        - id: mentor-ver1
+          uri: lb://cloud-mentor-service-ver1
+          predicates: # 断言 目的就是使用一组匹配规则,找到对应的route
+            - Path=/list
+            - Method=GET
+
+    consul: #配置consul地址
+      host: localhost
+      port: 8500
+      discovery:
+        prefer-ip-address: true
+        service-name: ${spring.application.name}
+management:
+  zipkin:
+    tracing:
+      endpoint: http://117.72.38.46:32810/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1.0 #采样率默认为0.1(0.1就是10次只能有一次被记录下来)，值越大收集越及时。
